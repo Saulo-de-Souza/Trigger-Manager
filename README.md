@@ -1,5 +1,9 @@
 # Trigger Manager
 
+<div style="width:100%; display:flex;align-items:center; justify-content:center;">
+<img src="./addons/trigger_manager/icons/icon.svg" width="100">
+</div>
+
 Trigger Manager is a Godot plugin that allows you to create and manage
 timed triggers directly from the Inspector.\
 Each trigger internally uses `SceneTreeTimer` to fire events at the
