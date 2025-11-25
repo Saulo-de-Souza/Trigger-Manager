@@ -139,3 +139,11 @@ var list: Array[TriggerConfig] = trigger_manager.triggers
 ```gdscript
 trigger_manager.disable_triggers = true
 ```
+
+---
+
+## Screenshots
+
+**Screenshot InputManager**
+
+![Screenshot 1](./screenshots/1.png)
