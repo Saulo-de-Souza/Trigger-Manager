@@ -11,19 +11,19 @@ way.
 
 ---
 
-## ✨ Features
+## Features
 
-- Configure multiple triggers directly in the Inspector\
-- Each trigger fires once or repeats (loop mode)\
-- Emits a `trigger_fired(trigger_name: String)` signal\
-- Support for custom processing modes\
-- Add and remove triggers dynamically via code\
-- Provides configuration warnings for missing or duplicate names\
+- Configure multiple triggers directly in the Inspector
+- Each trigger fires once or repeats (loop mode)
+- Emits a `trigger_fired(trigger_name: String)` signal
+- Support for custom processing modes
+- Add and remove triggers dynamically via code
+- Provides configuration warnings for missing or duplicate names
 - Easy to integrate with any gameplay system
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Enable the plugin
 
@@ -37,7 +37,7 @@ Then enable it in:
 
 ---
 
-## 📡 Signals
+## Signals
 
 ```gdscript
 signal trigger_fired(trigger_name: String)
@@ -47,7 +47,7 @@ Fired whenever a trigger completes its timer.
 
 ---
 
-## 🧩 Example Usage
+## Example Usage
 
 ### Listening to Trigger Events
 
@@ -65,7 +65,7 @@ func _on_trigger_fired(name: String) -> void:
 
 ---
 
-## 🔧 Adding Triggers via Code
+## Adding Triggers via Code
 
 ```gdscript
 trigger_manager.add_trigger("enemy_spawn", 3.0, false)
@@ -77,7 +77,7 @@ it will not be added.
 
 ---
 
-## ❌ Removing Triggers via Code
+## Removing Triggers via Code
 
 ```gdscript
 trigger_manager.remove_trigger("enemy_spawn")
@@ -88,33 +88,33 @@ If a trigger does not exist, a warning is shown.
 
 ---
 
-## 📝 Inspector Setup
+## Inspector Setup
 
 In the Inspector, you can configure:
 
-- Trigger name\
-- Timeout duration\
-- Repeat mode\
-- Processing mode (idle, physics, always)\
+- Trigger name
+- Timeout duration
+- Repeat mode
+- Processing mode (idle, physics, always)
 - Ignore time scale
 
 Each TriggerConfig resource is initialized automatically on startup.
 
 ---
 
-## ⚠ Configuration Warnings
+## Configuration Warnings
 
 Trigger Manager will warn you if:
 
-- A trigger has no name\
-- Two triggers share the same name\
+- A trigger has no name
+- Two triggers share the same name
 - A trigger is empty/unconfigured
 
 These warnings appear directly in the Inspector.
 
 ---
 
-## 🛠 Public API Summary
+## Public API Summary
 
 ### Add Trigger
 
@@ -139,28 +139,3 @@ var list: Array[TriggerConfig] = trigger_manager.triggers
 ```gdscript
 trigger_manager.disable_triggers = true
 ```
-
----
-
-## 📂 Folder Structure
-
-    addons/
-    └── trigger_manager/
-        ├── trigger_manager.gd
-        ├── trigger_config.gd
-        ├── plugin.cfg
-        ├── icons/
-        │   └── icon.svg
-
----
-
-## 📜 License
-
-MIT License -- free to use in commercial and open-source projects.
-
----
-
-## ❤️ Contributing
-
-Issues and pull requests are welcome!\
-Feel free to expand, optimize, or submit ideas for new features.
