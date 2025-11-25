@@ -1,3 +1,3 @@
 @echo off
 
-git add --all && git commit -m %i && git push origin master
+git add --all && git commit -m %1 && git push origin master
