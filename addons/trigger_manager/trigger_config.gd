@@ -30,6 +30,7 @@ class_name TriggerConfig extends Resource
 #region PRIVATE PROPERTIES *****************************
 var _owner: TriggerManager
 var _timer: SceneTreeTimer
+var _time_paused: float = -1
 #endregion *********************************************
 
 
@@ -42,9 +43,26 @@ var is_busy: bool = false
 var time_left: float = 0.0:
 	get():
 		if not is_instance_valid(_timer): return 0.0
-		return _timer.time_left
+		return _timer.time_left if _time_paused == -1 else _time_paused
 	set(value):
 		push_warning("time_left is readonly.")
+
+
+var paused: bool = false:
+	set(value):
+		if value == paused: return
+		paused = value
+		if is_instance_valid(_timer):
+			if paused:
+				_time_paused = _timer.time_left
+				_diconnect()
+			else:
+				if _time_paused > -1:
+					is_busy = true
+					_timer = _owner.get_tree().create_timer(_time_paused, process_always, process_in_physics, ignore_time_scale)
+					_time_paused = -1
+					if not _timer.timeout.is_connected(_on_timeout):
+						_timer.timeout.connect(_on_timeout)
 #endregion *********************************************
 
 
@@ -77,11 +95,16 @@ func _on_timeout() -> void:
 				_timer.timeout.connect(_on_timeout)
 		else:
 			is_busy = false
-#endregion *********************************************
+			
+			
+func _diconnect() -> void:
+	if is_instance_valid(_timer):
+		if _timer.timeout.is_connected(_on_timeout):
+			_timer.timeout.disconnect(_on_timeout)
+		is_busy = false if _time_paused > -1 else true
 
 
-#region PUBLIC METHODS *********************************
-func start(p_owner: TriggerManager) -> SceneTreeTimer:
+func _start(p_owner: TriggerManager) -> SceneTreeTimer:
 	_owner = p_owner
 	if is_instance_valid(_owner):
 		is_busy = true
@@ -91,13 +114,14 @@ func start(p_owner: TriggerManager) -> SceneTreeTimer:
 		return _timer
 	return null
 	
-	
-func destroy() -> void:
-	if is_instance_valid(_timer):
-		if _timer.timeout.is_connected(_on_timeout):
-			_timer.timeout.disconnect(_on_timeout)
-		is_busy = false
-		_timer.time_left = 0
+
+func _restart(p_owner: TriggerManager) -> void:
+	_start(p_owner)
+#endregion *********************************************
+
+
+#region PUBLIC METHODS *********************************
+
 #endregion *********************************************
 
 

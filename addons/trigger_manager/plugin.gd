@@ -11,9 +11,9 @@ var script_resource = preload("res://addons/trigger_manager/trigger_config.gd")
 
 func _enable_plugin() -> void:
 	add_custom_type("TriggerManager", "Node", script_main, icon)
-	add_custom_type("TriggerData", "Resource", script_resource, icon_resource)
+	add_custom_type("TriggerConfig", "Resource", script_resource, icon_resource)
 
 
 func _disable_plugin() -> void:
 	remove_custom_type("TriggerManager")
-	remove_custom_type("TriggerData")
+	remove_custom_type("TriggerConfig")

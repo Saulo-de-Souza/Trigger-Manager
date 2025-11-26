@@ -36,7 +36,7 @@ func _ready() -> void:
 	for trigger in triggers:
 		if trigger:
 			trigger._init_owner(self, trigger.name, trigger.time, trigger.repeat, trigger.process_always, trigger.process_in_physics, trigger.ignore_time_scale)
-			trigger.start(self)
+			trigger._start(self)
 			
 	
 func _get_configuration_warnings() -> PackedStringArray:
@@ -62,34 +62,62 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 #region PRIVATE METHODS ********************************
-func _has_trigger_with_name(trigger_name: String) -> bool:
-	for trigger in triggers:
-		if trigger:
-			if trigger.name == trigger_name:
-				return true
-	return false
+
 #endregion *********************************************
 
 
 #region PUBLIC METHODS *********************************
 ## Add a new trigger.
 func add_trigger(trigger_name: String, time: float, repeat: bool) -> void:
-	if not _has_trigger_with_name(trigger_name):
+	if not has_trigger_with_name(trigger_name):
 		var new_trigger: TriggerConfig = TriggerConfig.new(self, trigger_name, time, repeat)
 		triggers.append(new_trigger)
-		new_trigger.start(self)
+		new_trigger._start(self)
 		return
 	push_warning("The trigger named %s was not added because one with the same name already exists. Consider adding triggers with unique names." %trigger_name)
 	
 	
 ## Remove a new trigger.
 func remove_trigger(trigger_name: String) -> void:
-	var find_index: int = triggers.find_custom(func(trigger: TriggerConfig): return trigger.name == trigger_name)
+	var find_index: int = get_index_trigger(trigger_name)
 	if find_index >= 0:
-		triggers[find_index].destroy()
+		triggers[find_index]._diconnect()
 		triggers.remove_at(find_index)
 		return
 	push_warning("The trigger named %s was not found to be removed. Please verify the trigger name is correct."%trigger_name)
+
+
+func restart_trigger(trigger_name: String) -> void:
+	var find_trigger: TriggerConfig = get_trigger(trigger_name)
+	if find_trigger:
+		find_trigger.restart(self)
+
+
+func pause_trigger(trigger_name: String, value: bool) -> void:
+	var find_trigger: TriggerConfig = get_trigger(trigger_name)
+	if find_trigger:
+		find_trigger.paused = value
+	else:
+		push_warning("The trigger named %s was not found to be paused. Please verify the trigger name is correct."%trigger_name)
+		
+
+func has_trigger_with_name(trigger_name: String) -> bool:
+	for trigger in triggers:
+		if trigger:
+			if trigger.name == trigger_name:
+				return true
+	return false
+
+
+func get_trigger(trigger_name: String) -> TriggerConfig:
+	var find_index: int = triggers.find_custom(func(trigger: TriggerConfig): return trigger.name == trigger_name)
+	if find_index >= 0:
+		return triggers[find_index]
+	return null
+	
+
+func get_index_trigger(trigger_name: String) -> int:
+	return triggers.find_custom(func(trigger: TriggerConfig): return trigger.name == trigger_name)
 #endregion *********************************************
 
 
