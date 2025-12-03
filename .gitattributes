@@ -4,3 +4,4 @@ gp.bat export-ignore
 README.md export-ignore
 LICENSE.md export-ignore
 /screenshots export-ignore
+/assets export-ignore
