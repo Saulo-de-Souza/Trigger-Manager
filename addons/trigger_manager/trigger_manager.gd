@@ -23,16 +23,9 @@ signal trigger_fired(trigger_name: String)
 #endregion *********************************************
 
 
-#region PRIVATE PROPERTIES *****************************
-#endregion *********************************************
-
-
-#region PUBLIC PROPERTIES ******************************
-#endregion *********************************************
-
-
 #region ENGINE METHODS *********************************
 func _ready() -> void:
+	if Engine.is_editor_hint(): return
 	for trigger in triggers:
 		if trigger:
 			trigger._init_owner(self, trigger.name, trigger.time, trigger.repeat, trigger.process_always, trigger.process_in_physics, trigger.ignore_time_scale)
@@ -61,11 +54,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 #endregion *********************************************
 
 
-#region PRIVATE METHODS ********************************
-
-#endregion *********************************************
-
-
 #region PUBLIC METHODS *********************************
 ## Add a new trigger.
 func add_trigger(trigger_name: String, time: float, repeat: bool) -> void:
@@ -74,7 +62,7 @@ func add_trigger(trigger_name: String, time: float, repeat: bool) -> void:
 		triggers.append(new_trigger)
 		new_trigger._start(self)
 		return
-	push_warning("The trigger named %s was not added because one with the same name already exists. Consider adding triggers with unique names." %trigger_name)
+	push_warning("The trigger named %s was not added because one with the same name already exists. Consider adding triggers with unique names."%trigger_name)
 	
 	
 ## Remove a new trigger.

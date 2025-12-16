@@ -86,7 +86,6 @@ func _init_owner(p_owner: TriggerManager, _name: String, _time: float, _repeat: 
 	
 
 func _on_timeout() -> void:
-	if Engine.is_editor_hint(): return
 	if is_instance_valid(_owner):
 		if not _owner.disable_triggers: _owner.trigger_fired.emit(name)
 		if repeat:
