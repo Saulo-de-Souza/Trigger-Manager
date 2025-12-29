@@ -28,8 +28,9 @@ func _ready() -> void:
 	if Engine.is_editor_hint(): return
 	for trigger in triggers:
 		if trigger:
-			trigger._init_owner(self, trigger.name, trigger.time, trigger.repeat, trigger.process_always, trigger.process_in_physics, trigger.ignore_time_scale)
-			trigger._start(self)
+			trigger._init_owner(self, trigger.name, trigger.time, trigger.repeat, trigger.auto_start, trigger.process_always, trigger.process_in_physics, trigger.ignore_time_scale)
+			if trigger.auto_start:
+				trigger.start()
 			
 	
 func _get_configuration_warnings() -> PackedStringArray:
@@ -56,11 +57,12 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 #region PUBLIC METHODS *********************************
 ## Add a new trigger.
-func add_trigger(trigger_name: String, time: float, repeat: bool) -> void:
+func add_trigger(trigger_name: String, time: float, repeat: bool, auto_start: bool) -> void:
 	if not has_trigger_with_name(trigger_name):
-		var new_trigger: TriggerConfig = TriggerConfig.new(self, trigger_name, time, repeat)
+		var new_trigger: TriggerConfig = TriggerConfig.new(self, trigger_name, time, repeat, auto_start)
 		triggers.append(new_trigger)
-		new_trigger._start(self)
+		if new_trigger.auto_start:
+			new_trigger.start()
 		return
 	push_warning("The trigger named %s was not added because one with the same name already exists. Consider adding triggers with unique names."%trigger_name)
 	
@@ -75,10 +77,16 @@ func remove_trigger(trigger_name: String) -> void:
 	push_warning("The trigger named %s was not found to be removed. Please verify the trigger name is correct."%trigger_name)
 
 
+func start_trigger(trigger_name: String) -> void:
+	var find_trigger: TriggerConfig = get_trigger(trigger_name)
+	if find_trigger:
+		find_trigger.start()
+		
+		
 func restart_trigger(trigger_name: String) -> void:
 	var find_trigger: TriggerConfig = get_trigger(trigger_name)
 	if find_trigger:
-		find_trigger.restart(self)
+		find_trigger.restart()
 
 
 func pause_trigger(trigger_name: String, value: bool) -> void:
@@ -101,6 +109,8 @@ func get_trigger(trigger_name: String) -> TriggerConfig:
 	var find_index: int = triggers.find_custom(func(trigger: TriggerConfig): return trigger.name == trigger_name)
 	if find_index >= 0:
 		return triggers[find_index]
+		
+	push_warning("Trigger (%s) not found."%trigger_name)
 	return null
 	
 
@@ -128,7 +138,7 @@ func set_triggers(value: Array[TriggerConfig]) -> void:
 	triggers = value
 	for trigger in triggers:
 		if trigger:
-			trigger._init_owner(self, trigger.name, trigger.time, trigger.repeat, trigger.process_always, trigger.process_in_physics, trigger.ignore_time_scale)
+			trigger._init_owner(self, trigger.name, trigger.time, trigger.repeat, trigger.auto_start, trigger.process_always, trigger.process_in_physics, trigger.ignore_time_scale)
 	
 	update_configuration_warnings()
 #endregion *********************************************

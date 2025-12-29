@@ -16,6 +16,9 @@ class_name TriggerConfig extends Resource
 ## If true, the trigger will be emitted repeatedly.
 @export var repeat: bool = false: get = get_repeat, set = set_repeat
 
+## Init paused.
+@export var auto_start: bool = false: get = get_auto_start, set = set_auto_start
+
 ## If param process_always is false, the timer will be paused when setting SceneTree.paused to true.
 @export var process_always: bool = true: get = get_process_always, set = set_process_always
 
@@ -67,19 +70,22 @@ var paused: bool = false:
 
 
 #region ENGINE METHODS *********************************
-func _init(p_owner: TriggerManager = null, p_name: String = "", p_time: float = 0.0, p_repeat: bool = false) -> void:
+func _init(p_owner: TriggerManager = null, p_name: String = "", p_time: float = 0.0, p_repeat: bool = false, p_auto_start: bool = false) -> void:
+	_owner = p_owner
 	name = p_name
 	time = p_time
 	repeat = p_repeat
+	auto_start = p_auto_start
 #endregion *********************************************
 
 
 #region PRIVATE METHODS ********************************
-func _init_owner(p_owner: TriggerManager, _name: String, _time: float, _repeat: bool, _process_always: bool, _process_in_physics: bool, _ignore_time_scale: bool) -> void:
+func _init_owner(p_owner: TriggerManager, _name: String, _time: float, _repeat: bool, _auto_start: bool, _process_always: bool, _process_in_physics: bool, _ignore_time_scale: bool) -> void:
 	_owner = p_owner
 	name = _name
 	time = _time
 	repeat = _repeat
+	auto_start = _auto_start
 	process_always = _process_always
 	process_in_physics = _process_in_physics
 	ignore_time_scale = _ignore_time_scale
@@ -103,8 +109,7 @@ func _diconnect() -> void:
 		is_busy = false if _time_paused > -1 else true
 
 
-func _start(p_owner: TriggerManager) -> SceneTreeTimer:
-	_owner = p_owner
+func start() -> SceneTreeTimer:
 	if is_instance_valid(_owner):
 		is_busy = true
 		_timer = _owner.get_tree().create_timer(time, process_always, process_in_physics, ignore_time_scale)
@@ -114,8 +119,8 @@ func _start(p_owner: TriggerManager) -> SceneTreeTimer:
 	return null
 	
 
-func _restart(p_owner: TriggerManager) -> void:
-	_start(p_owner)
+func restart() -> void:
+	start()
 #endregion *********************************************
 
 
@@ -137,6 +142,10 @@ func get_repeat() -> bool:
 	return repeat
 
 
+func get_auto_start() -> bool:
+	return auto_start
+	
+	
 func get_process_always() -> bool:
 	return process_always
 		
@@ -175,6 +184,12 @@ func set_repeat(value: bool) -> void:
 		_owner.update_configuration_warnings()
 		
 
+func set_auto_start(value: bool) -> void:
+	auto_start = value
+	if is_instance_valid(_owner):
+		_owner.update_configuration_warnings()
+	
+	
 ## If false, the timer will be paused when setting SceneTree.paused to true.
 func set_process_always(value: bool) -> void:
 	process_always = value
