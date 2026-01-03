@@ -151,3 +151,10 @@ trigger_manager.disable_triggers = true
 **Screenshot InputManager**
 
 ![Screenshot 1](./screenshots/1.png)
+
+---
+
+## ❤️ Support
+
+If this project helps you, consider supporting:
+https://github.com/sponsors/Saulo-de-Souza
